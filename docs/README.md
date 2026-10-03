@@ -1,10 +1,12 @@
 # ChatCMD documentation
 
-이 포크의 주된 사용 흐름은 Workspace Gateway를 통해 dot에 개발 작업을 맡기고 Slack에서 요청·결과를 주고받는 구성이에요. 먼저 아래 설정 가이드를 읽으세요. 원본 ChatCMD의 기술 문서는 유지해요.
+이 포크의 주된 사용 흐름은 Workspace Gateway를 통해 dot에 개발 작업을 맡기고 Slack에서 요청·결과를 주고받는 구성이에요. 처음 연결할 때와 일상 작업을 요청할 때의 문서를 나눠 안내해요. 원본 ChatCMD의 기술 문서는 유지해요.
 
 ## Users and operators
 
-- **[dot·Slack 설정과 사용: 설치, 공개 MCP, 권한, 웹 검증, 작업 요청](DOT_SLACK_SETUP.md)**
+- **[설치·연결](DOT_SLACK_SETUP.md)**: 빌드, 공유 폴더·권한, 공개 MCP, 웹·dot·Slack 연결 검증
+- **[작업 요청](WORKSPACE_USAGE.md)**: 폴더명의 의미, 기존·새 폴더, 후속 요청과 공통 작업 지침
+- **[운영·문제 해결](GATEWAY_OPERATIONS.md)**: 업데이트, 접속 코드, 연결·권한 오류와 실제 검증 결과
 - [Windows 빌드 및 Secure MCP Tunnel 대안 (한국어)](PLUGIN_SETUP.md)
 - [Troubleshooting](TROUBLESHOOTING.md)
 - [MCP method reference](mcp_method.md)

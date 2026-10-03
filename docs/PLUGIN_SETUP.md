@@ -1,6 +1,6 @@
 # Windows 설치와 ChatGPT 연결
 
-> 이 문서는 Windows 빌드와 **OpenAI Secure MCP Tunnel**을 사용하는 대안이에요. 이 포크의 기본 목적과 공개 HTTPS MCP → dot → Slack 설정은 [dot·Slack 상세 가이드](DOT_SLACK_SETUP.md)를 먼저 참고하세요. 아래 터널 연결 방식은 공개 HTTPS 주소 등록 방식과 달라요.
+> 이 문서는 Windows 빌드와 **OpenAI Secure MCP Tunnel**을 사용하는 대안이에요. 이 포크의 기본 목적과 공개 HTTPS MCP → dot → Slack 설정은 [설치·연결 가이드](DOT_SLACK_SETUP.md)를 먼저 참고하세요. 연결 후 요청 방법은 [작업 요청 가이드](WORKSPACE_USAGE.md)에 있어요. 아래 터널 연결 방식은 공개 HTTPS 주소 등록 방식과 달라요.
 
 새 PC에서 **소스 빌드 → ChatCMD 실행 → Secure MCP Tunnel → ChatGPT MCP 앱 → 작업 폴더 확인**까지 진행하는 설치 안내입니다. 각 사용자가 자신의 PC와 계정에서 설정합니다. 이 저장소는 소스만 공유하며, 실행 파일 배포나 공개 플러그인 패키지 제출을 요구하지 않습니다.
 

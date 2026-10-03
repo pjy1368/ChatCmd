@@ -26,7 +26,7 @@ Phần lớn method đều có các trường correlation chung do ChatCMD bổ 
 
 Luồng agent bắt buộc:
 
-1. `agent_user_message` là tùy chọn cho bookkeeping; khi chọn project bằng `[repository-name]` hoặc `[new project: name]`, gọi một lần gần đầu turn với nguyên văn yêu cầu của user.
+1. `agent_user_message` là tùy chọn cho bookkeeping; khi chọn project bằng `[folder-name]` hoặc `[new project: name]`, gọi một lần gần đầu turn với nguyên văn yêu cầu của user.
 2. Với mọi yêu cầu không-trivial, gọi `agent_progress` ngay sau đó để tóm tắt user yêu cầu gì và agent sẽ làm gì tiếp theo, trước `skills_list` hoặc tool substantive khác.
 3. Với công việc project không tầm thường, gọi `skills_list`; nếu có skill phù hợp thì đọc bằng `skill_read` trước khi thao tác liên quan.
 4. Trong lúc thực hiện, duy trì `agent_progress` theo checkpoint có ý nghĩa: thường sau khoảng 2–4 substantive operation hoặc sau một batch thao tác low-level liên quan chặt. Không cần callback theo từng tool; execution-session polling nhanh có thể gom cho đến khi trạng thái/output thay đổi đáng kể, còn lỗi/retry nên báo hướng xử lý trước khi đổi cách làm.
@@ -36,11 +36,17 @@ Luồng agent bắt buộc:
 ### Shared project selection
 
 Share a parent directory using the existing project management settings. A request
-starting with `[repository-name]` selects a unique existing direct child of a
-currently shared parent. `[new project: name]` and `[새 프로젝트: name]` select the
+starting with `[folder-name]` selects a unique existing direct child directory of a
+currently shared parent, whether or not it is a Git repository. The name is the
+actual directory name, not the display name in the Projects management UI.
+`[new project: name]` and `[새 프로젝트: name]` select the
 single shared parent as the working directory for creating the named child. The
 parent remains the task project after creation; use the child path explicitly for
-its commands. One leading agent mention is accepted. A closing `]` must be followed
+its commands. The selector does not create a directory or initialize Git; the
+agent must create the child directory before writing files. Once it exists, use
+`[name]` in subsequent requests to select the child itself. See the
+[workspace usage guide](WORKSPACE_USAGE.md) for the create-then-continue workflow.
+One leading agent mention is accepted. A closing `]` must be followed
 by whitespace or the end of the message; Markdown links are not selectors.
 
 Call `agent_user_message` near the beginning with the exact user message, then use
