@@ -4,8 +4,9 @@
 
 ## Users and operators
 
-- **[설치·연결](DOT_SLACK_SETUP.md)**: 빌드, 공유 폴더·권한, 공개 MCP, 웹·dot·Slack 연결 검증
-- **[작업 요청](WORKSPACE_USAGE.md)**: 폴더명의 의미, 기존·새 폴더, 후속 요청과 공통 작업 지침
+- **[AI에게 설치 맡기기](../README.md#처음이라면-ai에게-설치-맡기기)**: 이전 대화 없이 넘길 설치 요청문
+- **[설치·연결](DOT_SLACK_SETUP.md)**: 준비물, 빌드, 공유 폴더·권한, 공개 MCP, 웹·dot·Slack 검증과 완료 기준
+- **[Slack 작업 요청](WORKSPACE_USAGE.md)**: 매번 보내는 짧은 예시, 폴더명의 의미, 기존·새 폴더, 후속 요청과 PR
 - **[운영·문제 해결](GATEWAY_OPERATIONS.md)**: 업데이트, 접속 코드, 연결·권한 오류와 실제 검증 결과
 - [Windows 빌드 및 Secure MCP Tunnel 대안 (한국어)](PLUGIN_SETUP.md)
 - [Troubleshooting](TROUBLESHOOTING.md)
