@@ -1,10 +1,11 @@
 # ChatCMD documentation
 
-This directory contains technical and operational documentation for the open-source ChatCMD client.
+이 포크의 주된 사용 흐름은 Workspace Gateway를 통해 dot에 개발 작업을 맡기고 Slack에서 요청·결과를 주고받는 구성이에요. 먼저 아래 설정 가이드를 읽으세요. 원본 ChatCMD의 기술 문서는 유지해요.
 
 ## Users and operators
 
-- [Windows 설치 A–Z: 빌드, Secure MCP Tunnel, ChatGPT, 프로젝트, 업데이트 (한국어)](PLUGIN_SETUP.md)
+- **[dot·Slack 설정과 사용: 설치, 공개 MCP, 권한, 웹 검증, 작업 요청](DOT_SLACK_SETUP.md)**
+- [Windows 빌드 및 Secure MCP Tunnel 대안 (한국어)](PLUGIN_SETUP.md)
 - [Troubleshooting](TROUBLESHOOTING.md)
 - [MCP method reference](mcp_method.md)
 - [Diagnostic logs](logs.md)

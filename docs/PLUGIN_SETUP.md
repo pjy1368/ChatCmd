@@ -1,5 +1,7 @@
 # Windows 설치와 ChatGPT 연결
 
+> 이 문서는 Windows 빌드와 **OpenAI Secure MCP Tunnel**을 사용하는 대안이에요. 이 포크의 기본 목적과 공개 HTTPS MCP → dot → Slack 설정은 [dot·Slack 상세 가이드](DOT_SLACK_SETUP.md)를 먼저 참고하세요. 아래 터널 연결 방식은 공개 HTTPS 주소 등록 방식과 달라요.
+
 새 PC에서 **소스 빌드 → ChatCMD 실행 → Secure MCP Tunnel → ChatGPT MCP 앱 → 작업 폴더 확인**까지 진행하는 설치 안내입니다. 각 사용자가 자신의 PC와 계정에서 설정합니다. 이 저장소는 소스만 공유하며, 실행 파일 배포나 공개 플러그인 패키지 제출을 요구하지 않습니다.
 
 모든 명령은 **Windows PowerShell**에서 실행합니다. 예시는 `%LOCALAPPDATA%\ChatCMD`를 설치 기준 폴더로 사용합니다. 관리자 권한은 일반 실행에 필요하지 않습니다.
@@ -46,7 +48,7 @@ Cargo.toml의 Rust 하한만 맞추기보다 현재 stable을 사용합니다. �
     $Root = Join-Path $env:LOCALAPPDATA 'ChatCMD'
     New-Item -ItemType Directory -Force -Path $Root | Out-Null
     if (Test-Path "$Root\source") { throw 'Source already exists; use the update section' }
-    git clone https://github.com/nash-agent/ChatCmd.git "$Root\source"
+    git clone --branch feat/shared-project-selection https://github.com/pjy1368/ChatCmd.git "$Root\source"
     if ($LASTEXITCODE -ne 0) { throw 'Clone failed' }
     Set-Location "$Root\source\web"
     npm.cmd ci
@@ -212,7 +214,9 @@ ChatCMD 관리 화면이 열리는 상태에서 **새 PowerShell 창**에 아래
     Copy-Item -LiteralPath "$Root\run" -Destination "$Backup\run" -Recurse
     $Data = Join-Path $env:LOCALAPPDATA 'ChatCmdClient\data'
     if (Test-Path $Data) { Copy-Item -LiteralPath $Data -Destination "$Backup\data" -Recurse }
-    git pull --ff-only origin main
+    git switch feat/shared-project-selection
+    if ($LASTEXITCODE -ne 0) { throw 'Branch selection failed' }
+    git pull --ff-only origin feat/shared-project-selection
     if ($LASTEXITCODE -ne 0) { throw 'Source update failed' }
     Set-Location "$Root\source\web"
     npm.cmd ci
@@ -236,7 +240,7 @@ ChatCMD 관리 화면이 열리는 상태에서 **새 PowerShell 창**에 아래
 
 서브에이전트를 사용하려면 **Settings → Execution → Sub-agent count**를 확인합니다. 기본값 **0은 비활성화**이므로 **1–5 중 필요한 동시 실행 수**로 바꾸고 저장합니다. 예를 들어 처음에는 1로 시작하고 병렬 작업이 필요할 때 늘릴 수 있습니다. Task concurrency나 Session concurrency와는 별도 설정입니다.
 
-이 숫자는 실행 상한이며 도구 권한·승인 정책을 우회하지 않습니다. 프로필에 서브에이전트 도구가 허용되어 있어야 하고, 브라우저 fallback을 사용할 때는 아래 확장도 필요합니다. 전체 동작은 [README의 Sub-Agent orchestration](../README.md#sub-agent-orchestration)을 참고합니다.
+이 숫자는 실행 상한이며 도구 권한·승인 정책을 우회하지 않습니다. 프로필에 서브에이전트 도구가 허용되어 있어야 하고, 브라우저 fallback을 사용할 때는 아래 확장도 필요합니다. 전체 동작은 [Sub-Agent reports](subagent-reports.md)를 참고합니다.
 
 ## 선택 사항: ChatGPT 브라우저 확장
 
@@ -253,7 +257,7 @@ ChatCMD 관리 화면이 열리는 상태에서 **새 PowerShell 창**에 아래
 
 로컬 MCP 클라이언트는 4단계에서 만든 주소를 Streamable HTTP 서버로 직접 사용할 수 있습니다. 공개 HTTPS 리버스 프록시를 별도로 운영하는 경우에만 ChatCMD의 **Custom Tunnel / private domain**을 사용합니다. 이 가이드의 Secure MCP Tunnel에서는 공개 도메인을 ChatCMD에 추가하지 않습니다. 공개 프록시는 관리 UI와 같은 리스너를 노출할 수 있으므로 별도의 접근 통제가 필요합니다.
 
-- [설정 변수와 개발 실행](../README.md#configuration)
+- [설정 변수와 Gateway 실행](DOT_SLACK_SETUP.md#1-소스-빌드와-실행)
 - [문제 해결](TROUBLESHOOTING.md)
 - [승인 범위](approval-grants.md)
 - [작업 경로 안전 정책](workspace-path-safety.md)
