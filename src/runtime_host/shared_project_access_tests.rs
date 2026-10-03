@@ -45,6 +45,9 @@ async fn roots(host: &RuntimeHost, context: &OperationContext) -> serde_json::Va
         .unwrap()
 }
 
+#[path = "shared_project_selection_tests.rs"]
+mod selection;
+
 #[tokio::test]
 async fn opt_in_adds_alias_to_existing_conversations_and_revokes_reads_and_writes() {
     let (host, agent, _root) = test_host().await;

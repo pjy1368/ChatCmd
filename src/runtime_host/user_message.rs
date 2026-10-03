@@ -125,12 +125,14 @@ impl RuntimeHost {
         )
         .await
         .map_err(|_| RuntimeError::new("storage_error", "browser turn lookup failed"))?;
+        let shared_project_selection = self.shared_project_selection(content).await?;
         let payload = json!({
             "bridgeRequestId": bridge.as_ref().map(|link| link.request_id.as_str()),
             "browserTurnId": bridge.as_ref().map(|link| link.browser_turn_id.as_str()),
             "tool": context.tool_name,
             "role": "user",
             "content": content,
+            "sharedProjectSelection": shared_project_selection.clone(),
             "title": is_first_candidate.then_some(provisional_title.as_str())
         });
         let inserted = self
@@ -207,13 +209,8 @@ impl RuntimeHost {
                 payload,
             );
         }
-        let project_folder = self
-            .repository
-            .task(&task_id)
-            .await
-            .map_err(storage_error)?
-            .and_then(|task| task.project_folder)
-            .filter(|folder| !folder.trim().is_empty());
+        let project_folder =
+            <Self as chatcmd_mcp::RuntimeApi>::project_folder(self, Some(task_id.as_str())).await?;
         let project_context = if let Some(folder) = project_folder.as_deref() {
             match ProjectContextService::default().load(folder, &[]).await {
                 Ok(bundle) => json!({
@@ -239,6 +236,7 @@ impl RuntimeHost {
         let browser_child = self.is_browser_subagent_task(task_id.as_str()).await?;
         let intent_hint = intent_hint(content);
         Ok(json!({
+            "sharedProjectSelection": shared_project_selection,
             "accepted": true,
             "duplicate": inserted == 0,
             "userMessageSynced": true,

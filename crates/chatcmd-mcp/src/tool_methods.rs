@@ -431,7 +431,7 @@ tool_methods!(
     (
         agent_user_message,
         UserMessageArgs,
-        "Record the current user message for task/turn lifecycle bookkeeping when useful. This tool is optional and is not a prerequisite for workspace, execution, repository, process, or other ChatCMD tools. Required field: content containing the exact current user message. Never use agent_user_message for progress, reflections, findings, or commentary after tool results; use agent_progress for those updates."
+        "Record the exact current user message for task/turn bookkeeping. For [repository-name] or [new project: name] (also [새 프로젝트: name]) requests, call once near the beginning to resolve the task project from currently shared parents; later follow-ups retain an accepted selection. Check sharedProjectSelection when requesting a different project; an unrecognized tag does not switch the previous project. Other tools may still be called directly. Required field: content containing the exact current user message. Never use agent_user_message for progress, reflections, findings, or commentary after tool results; use agent_progress for those updates."
     ),
     (
         agent_progress,

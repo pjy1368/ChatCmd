@@ -23,6 +23,7 @@ mod plan_prompt;
 pub(crate) mod plan_prompt_persistence;
 mod queued_messages;
 mod shared_project_access;
+mod shared_project_selection;
 mod subagent_concurrency;
 mod subagent_contract;
 mod subagent_fallback;
@@ -43,7 +44,7 @@ pub(crate) mod user_message_tests;
 mod virtual_workspace;
 use crate::websocket::AppEvent;
 pub(crate) use activity_control::{ActivityRegistry, StopActivityResult};
-use chatcmd_core::{LocalDevice, TaskId, TaskStore as _};
+use chatcmd_core::LocalDevice;
 use chatcmd_mcp::RuntimeApi;
 use chatcmd_runtime::{
     BlobStore, BoxFuture, CommandExecutionService, CursorCodec, DeviceDescriptor, GitService,
@@ -424,16 +425,7 @@ impl RuntimeApi for RuntimeHost {
         &'a self,
         task_id: Option<&'a str>,
     ) -> BoxFuture<'a, RuntimeResult<Option<String>>> {
-        Box::pin(async move {
-            let Some(task_id) = task_id.filter(|value| !value.trim().is_empty()) else {
-                return Ok(None);
-            };
-            let id = TaskId::new(task_id).map_err(|error| invalid("taskId", error))?;
-            let task = self.repository.task(&id).await.map_err(storage_error)?;
-            Ok(task
-                .and_then(|value| value.project_folder)
-                .filter(|value| !value.trim().is_empty()))
-        })
+        Box::pin(self.task_project_folder(task_id))
     }
 
     fn fail_subagent<'a>(

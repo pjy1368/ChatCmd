@@ -26,12 +26,39 @@ Phần lớn method đều có các trường correlation chung do ChatCMD bổ 
 
 Luồng agent bắt buộc:
 
-1. `agent_user_message` phải là tool đầu tiên và chỉ gọi đúng một lần cho user turn thật.
+1. `agent_user_message` là tùy chọn cho bookkeeping; khi chọn project bằng `[repository-name]` hoặc `[new project: name]`, gọi một lần gần đầu turn với nguyên văn yêu cầu của user.
 2. Với mọi yêu cầu không-trivial, gọi `agent_progress` ngay sau đó để tóm tắt user yêu cầu gì và agent sẽ làm gì tiếp theo, trước `skills_list` hoặc tool substantive khác.
 3. Với công việc project không tầm thường, gọi `skills_list`; nếu có skill phù hợp thì đọc bằng `skill_read` trước khi thao tác liên quan.
 4. Trong lúc thực hiện, duy trì `agent_progress` theo checkpoint có ý nghĩa: thường sau khoảng 2–4 substantive operation hoặc sau một batch thao tác low-level liên quan chặt. Không cần callback theo từng tool; execution-session polling nhanh có thể gom cho đến khi trạng thái/output thay đổi đáng kể, còn lỗi/retry nên báo hướng xử lý trước khi đổi cách làm.
 5. Nếu có sub-agent thì phải chờ chúng hoàn tất bằng `agent_subagent_wait`.
 6. `agent_turn_complete` phải là tool cuối cùng, gọi đúng một lần ngay trước khi agent trả lời user.
+
+### Shared project selection
+
+Share a parent directory using the existing project management settings. A request
+starting with `[repository-name]` selects a unique existing direct child of a
+currently shared parent. `[new project: name]` and `[새 프로젝트: name]` select the
+single shared parent as the working directory for creating the named child. The
+parent remains the task project after creation; use the child path explicitly for
+its commands. One leading agent mention is accepted. A closing `]` must be followed
+by whitespace or the end of the message; Markdown links are not selectors.
+
+Call `agent_user_message` near the beginning with the exact user message, then use
+its `projectFolder`, `workspace_context`, and relevant project skills. Other tools
+remain directly callable. `sharedProjectSelection` reports a selection accepted
+for this message. Unmatched tags, path-shaped brackets, and ordinary follow-ups do
+not replace the last accepted selection. If an unmatched tag intends a different
+project, clarify before modifying the previously selected project. Ambiguous
+selections fail before that message is recorded and do not poison later turns.
+
+The selection stores only a name and creation intent in the existing user-event
+payload. It does not populate `tasks.project_folder` or grant paths. Every use
+checks current shared scopes and canonical paths; revoked access and symlinks
+outside a shared parent cannot keep a derived project accessible. Existing explicit
+task project folders retain precedence. Delegated children inherit the accepted
+selection as of their registration, even after ordinary child follow-ups. This
+feature does not join conversations; Slack thread identity still depends on the
+client's actual authenticated conversation context.
 
 ---
 
